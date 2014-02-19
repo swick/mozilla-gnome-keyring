@@ -1,1 +1,1 @@
-pref("extensions.gnome-keyring.keyringName", "moztest");
+pref("extensions.gnome-keyring.keyringName", "mozilla");

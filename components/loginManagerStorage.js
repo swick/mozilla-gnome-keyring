@@ -20,6 +20,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 	attributeFormSubmitURL: "formSubmitURL",
 	attributeHttpRealm: "httpRealm",
 	attributeLoginInfoMagic: "mozLoginInfoMagic",
+	attributeDisabledHostMagic: "mozDisabledHostMagic",
+	attributeDisabledHostName: "disabledHost",
 	attributeUsername: "username",
 	attributeUsernameField: "usernameField",
 	attributeInfoMagic: "mozLoginInfoMagic",
@@ -59,14 +61,24 @@ GnomeKeyringLoginManagerStorage.prototype = {
 					lms.keyringName = prefBranch.getCharPref("keyringName");
 			}
 		}, false);
-	
-		this.stub(arguments);
+
+		var keyringNames = keyring.getNames();
+		if(keyringNames.indexOf(this.keyringName) == -1) {
+			try {
+				keyring.create(this.keyringName, null);
+			} catch(e) {
+				log("Exception: " + e + " in " + e.stack);
+			}
+		}
+		try {
+			keyring.unlock(this.keyringName, null);
+		} catch(e) {
+			log("Exception: " + e + " in " + e.stack);
+		}
 	},
 	initWithFile: function SLMS_initWithFile(aInputFile, aOutputFile) {
-		this.stub(arguments);
 	},
 	addLogin: function SLMS_addLogin(login) {
-		this.stub(arguments);
 		var attr = {};
 		attr[this.attributeHostname] = login.hostname;
 		attr[this.attributeFormSubmitURL] = login.formSubmitURL;
@@ -93,14 +105,14 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 	},
 	modifyLogin: function SLMS_modifyLogin(oldLogin, newLogin) {
-		this.stub(arguments);
+		// TODO: implement
 	},
 	getAllLogins: function SLMS_getAllLogins(count) {
-		this.stub(arguments);
-		return this.findLogins(count, null, null, null);
+		var logins = this.findLogins(count, null, null, null);
+		count.value = logins.length;
+		return logins;
 	},
 	removeAllLogins: function SLMS_removeAllLogins() {
-		this.stub(arguments);
 		var items = keyring.getItems(this.keyringName);
 		for(var i=0; i<items.length; i++) {
 			if (items[i].attributes[this.attributeInfoMagic] == "loginInfoMagicv1")
@@ -108,19 +120,57 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 	},
 	getAllDisabledHosts: function SLMS_getAllDisabledHosts(count) {
-		this.stub(arguments);
+		var items = keyring.getItems(this.keyringName);
+		var hosts = [];
+		for(var i=0; i<items.length; i++) {
+			var item = items[i];
+			if(item.attributes[this.attributeDisabledHostMagic] ==
+			     "disabledHostMagicv1") {
+				hosts.push(item.attributes[this.attributeDisabledHostName]);
+			}
+		}
+		count.value = hosts.length;
+		return hosts;
 	},
 	getLoginSavingEnabled: function SLMS_getLoginSavingEnabled(hostname) {
-		this.stub(arguments);
+		var items = keyring.getItems(this.keyringName);
+		for(var i=0; i<items.length; i++) {
+			var item = items[i];
+			if(item.attributes[this.attributeDisabledHostMagic] ==
+			     "disabledHostMagicv1" &&
+			   item.attributes[this.attributeDisabledHostName] ==
+			     hostname) {
+				return false;
+			}
+		}
 		return true;
 	},
 	setLoginSavingEnabled: function SLMS_setLoginSavingEnabled(hostname, enabled) {
-		this.stub(arguments);
+		var isEnabled = this.getLoginSavingEnabled(hostname);
+		if(!enabled && isEnabled) {
+			var attr = {};
+			attr[this.attributeDisabledHostName] = hostname;
+			attr[this.attributeDisabledHostMagic] = "disabledHostMagicv1";
+
+			keyring.itemCreate(this.keyringName, keyring.Values.ItemType.NOTE,
+					"Mozilla disabled host (" + hostname + ")",
+					attr, "", true);
+		}
+		else if(enabled && !isEnabled) {
+			var items = keyring.getItems(this.keyringName);
+			for(var i=0; i<items.length; i++) {
+				var item = items[i];
+				if(item.attributes[this.attributeDisabledHostMagic] ==
+				     "disabledHostMagicv1" &&
+				   item.attributes[this.attributeDisabledHostName] ==
+				     hostname) {
+					keyring.itemDelete(this.keyringName, item.id);
+				}
+			}
+		}
 	},
 	findLogins: function SLMS_findLogins(count, hostname, formSubmitURL, httpRealm) {
-		this.stub(arguments);
 		var items = keyring.getItems(this.keyringName);
-
 		var logins = [];
 		for(var i=0; i<items.length; i++) {
 			var item = items[i];
@@ -139,10 +189,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 		count.value = logins.length;
 		return logins;
-		
 	},
 	countLogins: function SLMS_countLogins(aHostname, aFormSubmitURL, aHttpRealm) {
-		this.stub(arguments);
 		var items = keyring.getItems(this.keyringName);
 		var count = 0;
 
