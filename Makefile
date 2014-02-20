@@ -1,8 +1,8 @@
 # The name of the extension.
-extension_name := gnome-keyring
+extension_name := gnome-keyring-integration
 
 # The UUID of the extension.
-extension_uuid := gnome-keyring@sebastianwick.net
+extension_uuid := gnome-keyring-integration@sebastianwick.net
 
 # The zip application to be used.
 ZIP := zip
