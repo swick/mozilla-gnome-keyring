@@ -4,12 +4,12 @@
   xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-    <em:id>gnome-keyring@sebastianwick.net</em:id>
-    <em:name>GNOME Keyring</em:name>
+    <em:id>gnome-keyring-integration@sebastianwick.net</em:id>
+    <em:name>GNOME Keyring integration</em:name>
     <em:description>GNOME Keyring integration</em:description>
     <em:version>0.1</em:version>
     <em:creator>Sebastian Wick</em:creator>
-    <em:homepageURL>https://sebastianwick.net/firefox-gnome-keyring</em:homepageURL>
+    <em:homepageURL>https://sebastianwick.net/moz-gnome-keyring-integration</em:homepageURL>
     <em:type>2</em:type>
 
     <!-- Mozilla Firefox -->

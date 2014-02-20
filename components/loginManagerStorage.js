@@ -26,6 +26,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 	attributeUsernameField: "usernameField",
 	attributeInfoMagic: "mozLoginInfoMagic",
 
+	uiBusy: false,
+
 	// Console logging service, used for debugging.
 	__logService : null,
 	get _logService() {
@@ -47,7 +49,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		this.log("Called " + arguments.callee.name + "(" + args.join(",") + ")");
 	},
 
-	init: function SLMS_init() {
+	init: function init() {
 		var prefBranch = Cc["@mozilla.org/preferences-service;1"]
 					.getService(Ci.nsIPrefService)
 					.getBranch(this.prefBranch);
@@ -76,9 +78,9 @@ GnomeKeyringLoginManagerStorage.prototype = {
 			log("Exception: " + e + " in " + e.stack);
 		}
 	},
-	initWithFile: function SLMS_initWithFile(aInputFile, aOutputFile) {
+	initWithFile: function initWithFile(aInputFile, aOutputFile) {
 	},
-	addLogin: function SLMS_addLogin(login) {
+	addLogin: function addLogin(login) {
 		var attr = {};
 		attr[this.attributeHostname] = login.hostname;
 		attr[this.attributeFormSubmitURL] = login.formSubmitURL;
@@ -91,7 +93,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		keyring.itemCreate(this.keyringName, keyring.Values.ItemType.GENERIC_SECRET,
 				   login.hostname, attr, login.password, true);
 	},
-	removeLogin: function SLMS_removeLogin(login) {
+	removeLogin: function removeLogin(login) {
 		var items = keyring.getItems(this.keyringName);
 		for(var i=0; i<items.length; i++) {
 			if (items[i].attributes[this.attributeHostname] == login.hostname &&
@@ -104,22 +106,27 @@ GnomeKeyringLoginManagerStorage.prototype = {
 				keyring.itemDelete(this.keyringName, items[i].id);
 		}
 	},
-	modifyLogin: function SLMS_modifyLogin(oldLogin, newLogin) {
+	modifyLogin: function modifyLogin(oldLogin, newLogin) {
 		// TODO: implement
 	},
-	getAllLogins: function SLMS_getAllLogins(count) {
+	getAllLogins: function getAllLogins(count) {
 		var logins = this.findLogins(count, null, null, null);
-		count.value = logins.length;
 		return logins;
 	},
-	removeAllLogins: function SLMS_removeAllLogins() {
+	getAllEncryptedLogins: function getAllEncryptedLogins(count) {
+		var logins = this.findLogins(count, null, null, null);
+		for(var i in logins)
+			logins[i].password = null;
+		return logins;
+	},
+	removeAllLogins: function removeAllLogins() {
 		var items = keyring.getItems(this.keyringName);
 		for(var i=0; i<items.length; i++) {
 			if (items[i].attributes[this.attributeInfoMagic] == "loginInfoMagicv1")
 				keyring.itemDelete(this.keyringName, items[i].id);
 		}
 	},
-	getAllDisabledHosts: function SLMS_getAllDisabledHosts(count) {
+	getAllDisabledHosts: function getAllDisabledHosts(count) {
 		var items = keyring.getItems(this.keyringName);
 		var hosts = [];
 		for(var i=0; i<items.length; i++) {
@@ -132,7 +139,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		count.value = hosts.length;
 		return hosts;
 	},
-	getLoginSavingEnabled: function SLMS_getLoginSavingEnabled(hostname) {
+	getLoginSavingEnabled: function getLoginSavingEnabled(hostname) {
 		var items = keyring.getItems(this.keyringName);
 		for(var i=0; i<items.length; i++) {
 			var item = items[i];
@@ -145,7 +152,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 		return true;
 	},
-	setLoginSavingEnabled: function SLMS_setLoginSavingEnabled(hostname, enabled) {
+	setLoginSavingEnabled: function setLoginSavingEnabled(hostname, enabled) {
 		var isEnabled = this.getLoginSavingEnabled(hostname);
 		if(!enabled && isEnabled) {
 			var attr = {};
@@ -169,7 +176,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 			}
 		}
 	},
-	findLogins: function SLMS_findLogins(count, hostname, formSubmitURL, httpRealm) {
+	findLogins: function findLogins(count, hostname, formSubmitURL, httpRealm) {
 		var items = keyring.getItems(this.keyringName);
 		var logins = [];
 		for(var i=0; i<items.length; i++) {
@@ -190,7 +197,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		count.value = logins.length;
 		return logins;
 	},
-	countLogins: function SLMS_countLogins(aHostname, aFormSubmitURL, aHttpRealm) {
+	countLogins: function countLogins(aHostname, aFormSubmitURL, aHttpRealm) {
 		var items = keyring.getItems(this.keyringName);
 		var count = 0;
 
@@ -203,7 +210,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 	itemMatchesLogin: function(item, aHostname, aFormSubmitURL, aHttpRealm) {
 		return  (item.attributes[this.attributeInfoMagic] == "loginInfoMagicv1") &&
 			(typeof aHostname != "string" || aHostname == "" || item.attributes[this.attributeHostname] == aHostname) &&
-			(typeof aFormSubmitURL != "string" || aFormSubmitURL == "" || item.attributes[this.attributeFormSubmitURL] == aFormSubmitURL);
+			(typeof aFormSubmitURL != "string" || aFormSubmitURL == "" || item.attributes[this.attributeFormSubmitURL] == aFormSubmitURL) &&
 			(typeof aHttpRealm != "string" || aHttpRealm == "" || item.attributes[this.attributeHttpRealm] == aHttpRealm);
 	}
 };
