@@ -20,5 +20,14 @@
         <em:maxVersion>29.*</em:maxVersion>
       </Description>
     </em:targetApplication>
+
+    <!-- Mozilla Thunderbird -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
+        <em:minVersion>4.*</em:minVersion>
+        <em:maxVersion>24.5.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
   </Description>
 </RDF>
