@@ -23,8 +23,8 @@ all: $(xpi_file)
 # This cleans all temporary files and directories created by 'make'.
 .PHONY: clean
 clean:
-	@rm -rf $(bin_dir)
 	@rm -f $(xpi_file)
+	@rmdir $(bin_dir)
 	@echo "Cleanup is done."
 
 # The sources for the XPI file.
@@ -36,6 +36,6 @@ xpi_built := install.rdf \
 
 $(xpi_file): $(xpi_built)
 	@echo "Creating XPI file."
-	@mkdir $(bin_dir)
+	@mkdir -p $(bin_dir)
 	@$(ZIP) $(xpi_file) $(xpi_built)
 	@echo "Creating XPI file. Done!"
