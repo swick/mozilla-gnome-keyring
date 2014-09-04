@@ -55,7 +55,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		this.log("Called " + arguments.callee.name + "(" + args.join(",") + ")");
 	},
 
-	init: function() {
+	initialize: function() {
 		var prefBranch = Cc["@mozilla.org/preferences-service;1"]
 					.getService(Ci.nsIPrefService)
 					.getBranch(this.prefBranch);
