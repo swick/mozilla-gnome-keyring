@@ -191,11 +191,19 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		for(var i=0; i<items.length; i++) {
 			var item = items[i];
 			if(this.itemMatchesLogin(item, hostname, formSubmitURL, httpRealm)) {
+				/**
+				 * The HttpRealm must be either a non empty string or null
+				 */
+				var httpRealm = item.attributes[this.attributeHttpRealm];
+				if(httpRealm == "") {
+					httpRealm = null;
+				}
+
 				var login = Components.classes["@mozilla.org/login-manager/loginInfo;1"]
 						.createInstance(Components.interfaces.nsILoginInfo);
 				login.init(item.attributes[this.attributeHostname],
 					   item.attributes[this.attributeFormSubmitURL],
-					   item.attributes[this.attributeHttpRealm],
+					   httpRealm,
 					   item.attributes[this.attributeUsername],
 					   item.secret,
 					   item.attributes[this.attributeUsernameField],
