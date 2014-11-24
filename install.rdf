@@ -9,7 +9,7 @@
     <em:description>GNOME Keyring integration</em:description>
     <em:version>0.5</em:version>
     <em:creator>Sebastian Wick</em:creator>
-    <em:homepageURL>https://sebastianwick.net/moz-gnome-keyring-integration</em:homepageURL>
+    <em:homepageURL>https://github.com/swick/moz-gnome-keyring-integration</em:homepageURL>
     <em:type>2</em:type>
 
     <!-- Mozilla Firefox -->
