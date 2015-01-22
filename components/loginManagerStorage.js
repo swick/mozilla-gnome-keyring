@@ -106,7 +106,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		for(var i=0; i<items.length; i++) {
 			if (items[i].attributes[this.attributeHostname] == login.hostname &&
 			    items[i].attributes[this.attributeFormSubmitURL] == login.formSubmitURL &&
-			    items[i].attributes[this.attributeHttpRealm] == login.httpRealm &&
+				((login.httpRealm == null && items[i].attributes[this.attributeHttpRealm] == "") || (items[i].attributes[this.attributeHttpRealm] == login.httpRealm)) &&
 			    items[i].attributes[this.attributeUsername] == login.username &&
 			    items[i].attributes[this.attributeUsernameField] == login.usernameField &&
 			    items[i].attributes[this.attributePasswordField] == login.passwordField &&
