@@ -121,6 +121,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 	},
 	modifyLogin: function(oldLogin, newLoginData) {
+		this.tryUnlockKeyring();
+
 		var newLogin = null;
 		if (newLoginData instanceof Components.interfaces.nsIPropertyBag) {
 			newLogin = oldLogin.clone();
