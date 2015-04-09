@@ -121,9 +121,32 @@ GnomeKeyringLoginManagerStorage.prototype = {
 				keyring.itemDelete(this.keyringName, items[i].id);
 		}
 	},
-	modifyLogin: function(oldLogin, newLogin) {
-		// TODO: implement
-		this.stub(arguments);
+	modifyLogin: function(oldLogin, newLoginData) {
+		var newLogin = null;
+		if (newLoginData instanceof Components.interfaces.nsIPropertyBag) {
+			newLogin = oldLogin.clone();
+			let propEnum = newLoginData.enumerator;
+			while (propEnum.hasMoreElements()) {
+				let prop = propEnum.getNext().QueryInterface(Ci.nsIProperty);
+				switch (prop.name) {
+				case "hostname":
+				case "httpRealm":
+				case "formSubmitURL":
+				case "username":
+				case "password":
+				case "usernameField":
+				case "passwordField":
+					newLogin[prop.name] = prop.value;
+					break;
+				default:
+					break;
+				}
+			}
+		} else {
+			newLogin = newLoginData.clone();
+		}
+		this.removeLogin(oldLogin);
+		this.addLogin(newLogin);
 	},
 	getAllLogins: function(count) {
 		var logins = this.findLogins(count, null, null, null);
