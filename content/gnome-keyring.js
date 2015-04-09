@@ -2,7 +2,8 @@ Components.utils.import("resource://gre/modules/ctypes.jsm");
 
 var EXPORTED_SYMBOLS = [ "Values", "itemGetAttributes", "itemGetInfo",
 	"itemDelete",  "itemCreate", "getItems", "getItemIDs", "getNames",
-	"changePassword", "lock", "unlock", "destroy", "create", "printItem" ];
+	"changePassword", "lock", "unlock", "isLocked", "destroy", "create",
+	"printItem" ];
 
 var Values = {
 	Result: {
@@ -46,6 +47,7 @@ var Type = (function() {
 	var GnomeKeyringAttributeType = ctypes.int;
 
 	/* opaque structs */
+	var GnomeKeyringInfo = ctypes.voidptr_t;
 	var GnomeKeyringItemInfo = ctypes.voidptr_t;
 
 	/* structs */
@@ -100,6 +102,7 @@ var Type = (function() {
 		GnomeKeyringResult: GnomeKeyringResult,
 		GnomeKeyringItemType: GnomeKeyringItemType,
 		GnomeKeyringAttributeType: GnomeKeyringAttributeType,
+		GnomeKeyringInfo: GnomeKeyringInfo,
 		GnomeKeyringItemInfo: GnomeKeyringItemInfo,
 		GList: GList,
 		GArray: GArray,
@@ -216,6 +219,24 @@ var gnome_keyring_find_items_sync = gnomeKeyringLib.declare("gnome_keyring_find_
 	Type.GnomeKeyringItemType, /* type*/
 	Type.GnomeKeyringAttributeList.ptr, /* attributes */
 	Type.GList.ptr.ptr /* found */);
+
+/**
+ * GnomeKeyringResult gnome_keyring_get_info_sync (const char *keyring,
+ *                                                 GnomeKeyringInfo **info);
+ */
+var gnome_keyring_get_info_sync = gnomeKeyringLib.declare("gnome_keyring_get_info_sync",
+	ctypes.default_abi,
+	Type.GnomeKeyringResult, /* return */
+	Type.char.ptr, /* keyring */
+	Type.GnomeKeyringInfo.ptr /* info */);
+
+/**
+ * gboolean gnome_keyring_info_get_is_locked (GnomeKeyringInfo *keyring_info);
+ */
+var gnome_keyring_info_get_is_locked = gnomeKeyringLib.declare("gnome_keyring_info_get_is_locked",
+	ctypes.default_abi,
+	Type.gboolean, /* return */
+	Type.GnomeKeyringInfo /* keyring_info */);
 
 /**
  * GnomeKeyringResult gnome_keyring_item_create_sync (const char *keyring,
@@ -341,7 +362,7 @@ unlock = function(keyring, password) {
 	if(typeof password != "string")
 		password = null;
 	var error = gnome_keyring_unlock_sync(keyring, password);
-	if(error != Values.Result.OK)
+	if(error != Values.Result.OK && error != Values.Result.ALREADY_UNLOCKED)
 		throw "gnome_keyring_unlock_sync failed: " + error;
 };
 
@@ -349,6 +370,20 @@ lock = function(keyring) {
 	var error = gnome_keyring_lock_sync(keyring);
 	if(error != Values.Result.OK)
 		throw "gnome_keyring_lock_sync failed: " + error;
+};
+
+getInfo = function(keyring) {
+	var info = Type.GnomeKeyringInfo(0);
+	var error = gnome_keyring_get_info_sync(keyring, info.address());
+	if(error != Values.Result.OK)
+		throw "gnome_keyring_get_info_sync failed: " + error;
+
+	return info;
+};
+
+isLocked = function(keyring) {
+	var info = getInfo(keyring);
+	return gnome_keyring_info_get_is_locked(info);
 };
 
 changePassword = function(keyring, oldPassword, newPassword) {

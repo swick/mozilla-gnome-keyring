@@ -79,11 +79,6 @@ GnomeKeyringLoginManagerStorage.prototype = {
 				this.log("Exception: " + e + " in " + e.stack);
 			}
 		}
-		try {
-			keyring.unlock(this.keyringName, null);
-		} catch(e) {
-			this.log("Exception: " + e + " in " + e.stack);
-		}
 	},
 	initialize: function() {
 		this.init();
@@ -96,6 +91,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		return new Promise(function (resolve) { resolve(); });
 	},
 	addLogin: function(login) {
+		this.tryUnlockKeyring();
+
 		var attr = {};
 		attr[this.attributeHostname] = login.hostname;
 		attr[this.attributeFormSubmitURL] = login.formSubmitURL;
@@ -109,6 +106,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 				   login.hostname, attr, login.password, true);
 	},
 	removeLogin: function(login) {
+		this.tryUnlockKeyring();
+
 		var items = keyring.getItems(this.keyringName);
 		for(var i=0; i<items.length; i++) {
 			if (items[i].attributes[this.attributeHostname] == login.hostname &&
@@ -159,6 +158,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		return logins;
 	},
 	removeAllLogins: function() {
+		this.tryUnlockKeyring();
+
 		var items = keyring.getItems(this.keyringName);
 		for(var i=0; i<items.length; i++) {
 			if (items[i].attributes[this.attributeInfoMagic] == "loginInfoMagicv1")
@@ -166,6 +167,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 	},
 	getAllDisabledHosts: function(count) {
+		this.tryUnlockKeyring();
+
 		var items = keyring.getItems(this.keyringName);
 		var hosts = [];
 		for(var i=0; i<items.length; i++) {
@@ -179,6 +182,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		return hosts;
 	},
 	getLoginSavingEnabled: function(hostname) {
+		this.tryUnlockKeyring();
+
 		var items = keyring.getItems(this.keyringName);
 		for(var i=0; i<items.length; i++) {
 			var item = items[i];
@@ -192,6 +197,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		return true;
 	},
 	setLoginSavingEnabled: function(hostname, enabled) {
+		// getLoginSavingEnabled calls tryUnlockKeyring().
 		var isEnabled = this.getLoginSavingEnabled(hostname);
 		if(!enabled && isEnabled) {
 			var attr = {};
@@ -216,6 +222,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 	},
 	findLogins: function(count, hostname, formSubmitURL, httpRealm) {
+		this.tryUnlockKeyring();
+
 		var items = keyring.getItems(this.keyringName);
 		var logins = [];
 		for(var i=0; i<items.length; i++) {
@@ -245,6 +253,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		return logins;
 	},
 	countLogins: function(aHostname, aFormSubmitURL, aHttpRealm) {
+		this.tryUnlockKeyring();
+
 		var items = keyring.getItems(this.keyringName);
 		var count = 0;
 
@@ -263,6 +273,17 @@ GnomeKeyringLoginManagerStorage.prototype = {
 			(typeof aHostname != "string" || aHostname == "" || item.attributes[this.attributeHostname] == aHostname) &&
 			(typeof aFormSubmitURL != "string" || aFormSubmitURL == "" || item.attributes[this.attributeFormSubmitURL] == aFormSubmitURL) &&
 			(typeof aHttpRealm != "string" || aHttpRealm == "" || item.attributes[this.attributeHttpRealm] == aHttpRealm);
+	},
+	tryUnlockKeyring: function() {
+		if (!keyring.isLocked(this.keyringName)) {
+			return;
+		}
+
+		try {
+			keyring.unlock(this.keyringName, null);
+		} catch (e) {
+			this.log("Exception: " + e + " in " + e.stack);
+		}
 	}
 };
 
