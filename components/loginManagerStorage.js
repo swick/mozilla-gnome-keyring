@@ -2,6 +2,7 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource://gre/modules/Promise.jsm");
 
 var keyring = {};
 Components.utils.import("chrome://gnome-keyring/content/gnome-keyring.js", keyring);
@@ -55,7 +56,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		this.log("Called " + arguments.callee.name + "(" + args.join(",") + ")");
 	},
 
-	initialize: function() {
+	init: function() {
 		var prefBranch = Cc["@mozilla.org/preferences-service;1"]
 					.getService(Ci.nsIPrefService)
 					.getBranch(this.prefBranch);
@@ -75,18 +76,24 @@ GnomeKeyringLoginManagerStorage.prototype = {
 			try {
 				keyring.create(this.keyringName, null);
 			} catch(e) {
-				log("Exception: " + e + " in " + e.stack);
+				this.log("Exception: " + e + " in " + e.stack);
 			}
 		}
 		try {
 			keyring.unlock(this.keyringName, null);
 		} catch(e) {
-			log("Exception: " + e + " in " + e.stack);
+			this.log("Exception: " + e + " in " + e.stack);
 		}
 	},
-	init: function() { this.initialize(); },
+	initialize: function() {
+		this.init();
+		return new Promise(function (resolve) { resolve(); });
+	},
 	initWithFile: function(aInputFile, aOutputFile) {
 		this.init();
+	},
+	terminate: function() {
+		return new Promise(function (resolve) { resolve(); });
 	},
 	addLogin: function(login) {
 		var attr = {};
@@ -194,16 +201,16 @@ GnomeKeyringLoginManagerStorage.prototype = {
 				/**
 				 * The HttpRealm must be either a non empty string or null
 				 */
-				var httpRealm = item.attributes[this.attributeHttpRealm];
-				if(httpRealm == "") {
-					httpRealm = null;
+				var itemHttpRealm = item.attributes[this.attributeHttpRealm];
+				if(itemHttpRealm == "") {
+					itemHttpRealm = null;
 				}
 
 				var login = Components.classes["@mozilla.org/login-manager/loginInfo;1"]
 						.createInstance(Components.interfaces.nsILoginInfo);
 				login.init(item.attributes[this.attributeHostname],
 					   item.attributes[this.attributeFormSubmitURL],
-					   httpRealm,
+					   itemHttpRealm,
 					   item.attributes[this.attributeUsername],
 					   item.secret,
 					   item.attributes[this.attributeUsernameField],
