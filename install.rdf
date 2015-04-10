@@ -12,6 +12,8 @@
     <em:homepageURL>https://github.com/swick/moz-gnome-keyring-integration</em:homepageURL>
     <em:type>2</em:type>
 
+    <em:optionsURL>chrome://gnome-keyring/content/options.xul</em:optionsURL>
+
     <!-- Mozilla Firefox -->
     <em:targetApplication>
       <Description>
