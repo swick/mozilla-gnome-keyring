@@ -1,18 +1,24 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
- 
-<dialog id="gnome-keyring-options" 
+
+<dialog id="gnome-keyring-options"
     onload="GnomeKeyringOptions.init()"
     ondialogaccept="return GnomeKeyringOptions.save()"
     title="GNOME Keyring Options"
 	  buttons="accept,cancel"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="options.js" />
-  <hbox align="center">
-    <label control="keyringNameMenu" value="Keyring: "/>
-    <menulist id="keyringNameMenu">
-      <menupopup>
-      </menupopup>
-    </menulist>
+  <hbox align="left">
+    <radiogroup id="keyringType">
+      <radio label="use the default keyring" value="default"/>
+      <radio label="store passwords only for this session" value="session"/>
+      <hbox align="left">
+        <radio label="use an available keyring" value="choose"/>
+        <menulist id="keyringNameMenu">
+          <menupopup>
+          </menupopup>
+        </menulist>
+      </hbox>
+    </radiogroup>
   </hbox>
 </dialog>

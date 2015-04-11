@@ -14,7 +14,6 @@ GnomeKeyringLoginManagerStorage.prototype = {
 	classID: Components.ID("{36defadb-7c73-4019-a77c-53c42bda0957}"),
 	QueryInterface: XPCOMUtils.generateQI([Ci.nsILoginManagerStorage]),
 
-	keyringName: "",
 	prefBranch: "extensions.gnome-keyring.",
 	attributePasswordField: "passwordField",
 	attributeHostname: "hostname",
@@ -56,6 +55,13 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		this.log("Called " + arguments.callee.name + "(" + args.join(",") + ")");
 	},
 
+	get keyringName() {
+		return this._keyringName;
+	},
+	set keyringName(name) {
+		this._keyringName = name.length == 0 ? null : name;
+	},
+
 	init: function() {
 		var prefBranch = Cc["@mozilla.org/preferences-service;1"]
 					.getService(Ci.nsIPrefService)
@@ -70,15 +76,6 @@ GnomeKeyringLoginManagerStorage.prototype = {
 					lms.keyringName = prefBranch.getCharPref("keyringName");
 			}
 		}, false);
-
-		var keyringNames = keyring.getNames();
-		if(keyringNames.indexOf(this.keyringName) == -1) {
-			try {
-				keyring.create(this.keyringName, null);
-			} catch(e) {
-				this.log("Exception: " + e + " in " + e.stack);
-			}
-		}
 	},
 	initialize: function() {
 		this.init();

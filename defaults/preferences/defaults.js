@@ -1,1 +1,1 @@
-pref("extensions.gnome-keyring.keyringName", "mozilla");
+pref("extensions.gnome-keyring.keyringName", "");
