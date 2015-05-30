@@ -122,7 +122,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 
 		var newLogin = null;
 		try {
-			newLoginData = newLoginData.QueryInterface(Components.interfaces.nsIPropertyBag);
+			newLoginData = newLoginData.QueryInterface(Ci.nsIPropertyBag);
 			newLogin = oldLogin.clone();
 			let propEnum = newLoginData.enumerator;
 			while (propEnum.hasMoreElements()) {
@@ -142,7 +142,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 				}
 			}
 		} catch (e) {
-			newLogin = newLoginData.QueryInterface(Components.interfaces.nsILoginInfo);
+			newLogin = newLoginData.QueryInterface(Ci.nsILoginInfo);
 		}
 		this.removeLogin(oldLogin);
 		this.addLogin(newLogin);
@@ -237,8 +237,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 					itemHttpRealm = null;
 				}
 
-				var login = Components.classes["@mozilla.org/login-manager/loginInfo;1"]
-						.createInstance(Components.interfaces.nsILoginInfo);
+				var login = Cc["@mozilla.org/login-manager/loginInfo;1"]
+						.createInstance(Ci.nsILoginInfo);
 				login.init(item.attributes[this.attributeHostname],
 					   item.attributes[this.attributeFormSubmitURL],
 					   itemHttpRealm,
