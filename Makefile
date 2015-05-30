@@ -23,8 +23,7 @@ all: $(xpi_file)
 # This cleans all temporary files and directories created by 'make'.
 .PHONY: clean
 clean:
-	@rm -f $(xpi_file)
-	@rmdir $(bin_dir)
+	@rm -rf $(bin_dir)
 	@echo "Cleanup is done."
 
 # The sources for the XPI file.
