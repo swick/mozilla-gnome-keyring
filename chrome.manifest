@@ -2,3 +2,4 @@ content gnome-keyring content/
 component {36defadb-7c73-4019-a77c-53c42bda0957} components/loginManagerStorage.js
 contract @sebastianwick.net/login-manager/storage/gnomekeyring;1 {36defadb-7c73-4019-a77c-53c42bda0957}
 category login-manager-storage nsILoginManagerStorage @sebastianwick.net/login-manager/storage/gnomekeyring;1
+skin gnome-keyring hicolor chrome/skin/hicolor/

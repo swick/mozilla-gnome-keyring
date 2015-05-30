@@ -30,10 +30,10 @@ clean:
 # The sources for the XPI file.
 xpi_built := install.rdf \
              chrome.manifest \
-             $(wildcard components/*.js) \
-             $(wildcard content/*.js) \
-             $(wildcard content/*.xul) \
-             $(wildcard defaults/preferences/*.js)
+             $(wildcard chrome/skin/hicolor/*.*) \
+             $(wildcard components/*.*) \
+             $(wildcard content/*.*) \
+             $(wildcard defaults/preferences/*.*)
 
 $(xpi_file): $(xpi_built) Makefile
 	@echo "Creating XPI file."
