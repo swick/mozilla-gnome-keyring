@@ -121,7 +121,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		this.tryUnlockKeyring();
 
 		var newLogin = null;
-		if (newLoginData instanceof Components.interfaces.nsIPropertyBag) {
+		try {
+			newLoginData = newLoginData.QueryInterface(Components.interfaces.nsIPropertyBag);
 			newLogin = oldLogin.clone();
 			let propEnum = newLoginData.enumerator;
 			while (propEnum.hasMoreElements()) {
@@ -140,8 +141,8 @@ GnomeKeyringLoginManagerStorage.prototype = {
 					break;
 				}
 			}
-		} else {
-			newLogin = newLoginData.clone();
+		} catch (e) {
+			newLogin = newLoginData.QueryInterface(Components.interfaces.nsILoginInfo);
 		}
 		this.removeLogin(oldLogin);
 		this.addLogin(newLogin);
