@@ -32,9 +32,10 @@ xpi_built := install.rdf \
              chrome.manifest \
              $(wildcard components/*.js) \
              $(wildcard content/*.js) \
+             $(wildcard content/*.xul) \
              $(wildcard defaults/preferences/*.js)
 
-$(xpi_file): $(xpi_built)
+$(xpi_file): $(xpi_built) Makefile
 	@echo "Creating XPI file."
 	@mkdir -p $(bin_dir)
 	@$(ZIP) $(xpi_file) $(xpi_built)
