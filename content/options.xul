@@ -10,10 +10,10 @@
   <script type="application/x-javascript" src="options.js" />
   <hbox align="left">
     <radiogroup id="keyringType">
-      <radio label="use the default keyring" value="default"/>
-      <radio label="store passwords only for this session" value="session"/>
+      <radio label="Use the default keyring" value="default"/>
+      <radio label="Store passwords only for this session" value="session"/>
       <hbox align="left">
-        <radio label="use an available keyring" value="choose"/>
+        <radio label="Use an available keyring" value="choose"/>
         <menulist id="keyringNameMenu">
           <menupopup>
           </menupopup>
