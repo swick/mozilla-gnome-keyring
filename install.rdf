@@ -6,11 +6,11 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>gnome-keyring-integration@sebastianwick.net</em:id>
     <em:name>GNOME Keyring integration</em:name>
-    <em:description>GNOME Keyring integration</em:description>
+    <em:description>Store passwords and form logins in GNOME Keyring. Set keyring name in "extensions.gnome-keyring.keyringName" preference (about:config).</em:description>
     <em:version>0.9</em:version>
     <em:creator>Sebastian Wick</em:creator>
     <em:iconURL>chrome://gnome-keyring/skin/seahorse.svg</em:iconURL>
-    <em:homepageURL>https://github.com/swick/moz-gnome-keyring-integration</em:homepageURL>
+    <em:homepageURL>https://github.com/swick/mozilla-gnome-keyring</em:homepageURL>
     <em:type>2</em:type>
 
     <em:optionsURL>chrome://gnome-keyring/content/options.xul</em:optionsURL>
