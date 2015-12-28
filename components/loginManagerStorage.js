@@ -113,7 +113,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		for(var i=0; i<items.length; i++) {
 			if (items[i].attributes[this.attributeHostname] == login.hostname &&
 			    items[i].attributes[this.attributeFormSubmitURL] == login.formSubmitURL &&
-			    items[i].attributes[this.attributeHttpRealm] == login.httpRealm &&
+			    (login.httpRealm == null || items[i].attributes[this.attributeHttpRealm] == login.httpRealm) &&
 			    items[i].attributes[this.attributeUsername] == login.username &&
 			    items[i].attributes[this.attributeUsernameField] == login.usernameField &&
 			    items[i].attributes[this.attributePasswordField] == login.passwordField &&
@@ -241,19 +241,12 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		for(var i=0; i<items.length; i++) {
 			var item = items[i];
 			if(this.itemMatchesLogin(item, hostname, formSubmitURL, httpRealm)) {
-				/**
-				 * The HttpRealm must be either a non empty string or null
-				 */
-				var itemHttpRealm = item.attributes[this.attributeHttpRealm];
-				if(itemHttpRealm == "") {
-					itemHttpRealm = null;
-				}
-
 				var login = Cc["@mozilla.org/login-manager/loginInfo;1"]
 						.createInstance(Ci.nsILoginInfo);
 				login.init(item.attributes[this.attributeHostname],
 					   item.attributes[this.attributeFormSubmitURL],
-					   itemHttpRealm,
+					   /* The HttpRealm must be either a non empty string or null */
+					   item.attributes[this.attributeHttpRealm] == "" ? null : item.attributes[this.attributeHttpRealm],
 					   item.attributes[this.attributeUsername],
 					   item.secret,
 					   item.attributes[this.attributeUsernameField],
