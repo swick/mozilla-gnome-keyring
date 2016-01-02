@@ -7,7 +7,7 @@
     <em:id>gnome-keyring-integration@sebastianwick.net</em:id>
     <em:name>GNOME Keyring integration</em:name>
     <em:description>Store passwords and form logins in GNOME Keyring. Set keyring name in "extensions.gnome-keyring.keyringName" preference (about:config).</em:description>
-    <em:version>0.10</em:version>
+    <em:version>0.11</em:version>
     <em:creator>Sebastian Wick</em:creator>
     <em:iconURL>chrome://gnome-keyring/skin/seahorse.svg</em:iconURL>
     <em:homepageURL>https://github.com/swick/mozilla-gnome-keyring</em:homepageURL>
@@ -20,7 +20,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>4.0</em:minVersion>
-        <em:maxVersion>39.*</em:maxVersion>
+        <em:maxVersion>45.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -29,7 +29,7 @@
       <Description>
         <em:id>{3550f703-e582-4d05-9a08-453d09bdfdc6}</em:id>
         <em:minVersion>5.0</em:minVersion>
-        <em:maxVersion>39.*</em:maxVersion>
+        <em:maxVersion>45.*</em:maxVersion>
       </Description>
     </em:targetApplication>
   </Description>
