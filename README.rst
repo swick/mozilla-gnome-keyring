@@ -78,31 +78,21 @@ by this extension.
 Migrating old passwords
 =======================
 
-Currently there is no migration facility. If you have many passwords in
-the default password manager, you'll need to manually transfer them
-to gnome-keyring:
+This extension cannot migrate passwords on its own.  However you can use the
+`Password Exporter`_ extension to export your passwords from the default
+password manager and then re-import them into gnome-keyring:
 
-* Create a TEMP profile, and install/enable this extension in it.
-* In the TEMP profile, edit ``extensions.gnome-keyring.keyringName`` to
-  whatever you eventually want to use.
-* Restart the TEMP profile for setting changes to take effect.
-* Open up the MAIN profile using ``firefox -no-remote -P <MAIN name>``
-  so that you have *both* profiles open.
-* Open up the password manager on the MAIN profile.
-* For each website listed:
-
-  * Right-click on its entry and select "copy password".
-  * Visit the website in the TEMP profile and login again, which should
-    trigger the "save password" prompt.
-
-* Once you're done, you can close the TEMP profile and delete it.
-* In the MAIN profile, install/enable this extension, and edit
-  ``extensions.gnome-keyring.keyringName`` to whatever you chose before.
-* Restart the MAIN profile for setting changes to take effect.
+* Before installing this extension install the `Password Exporter`_ extension.
+* Export all the passwords saved in Firefox' password manager to a XML file.
+* Install this extension and restart Firefox.
+* Import the passwords from the previously exported file.  They will be stored
+  in the keyring specified by ``extensions.gnome-keyring.keyringName``.
+* Once you're done, you are free uninstall the `Password Exporter`_ extension
+  and shred_ the XML file.
 
 The old data of the default password manager remains untouched, so you
 also need to delete that manually if you want to. This is done by going
-to your profile folder, and deleting ``key3.db`` and ``signons.sqlite``.
+to your profile folder, and shred_-ing ``key3.db`` and ``signons.sqlite``.
 After deleting, the data may still be forensically retrievable from your
 disk, but if you were protecting it with a master password, this data
 would still be be encrypted.
@@ -110,3 +100,6 @@ would still be be encrypted.
 Deleting old data will also clear the master password for the default
 password manager. If you don't clear it, you'll still be asked for it
 when you choose to "show passwords", even if this extension is active.
+
+.. _Password Exporter: https://addons.mozilla.org/en-US/firefox/addon/password-exporter/
+.. _shred: https://www.gnu.org/software/coreutils/manual/html_node/shred-invocation.html
