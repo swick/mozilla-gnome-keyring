@@ -11,9 +11,9 @@ pass=$( test -n "$2" \
   || secret-tool lookup hostname "$host")
 
 if [ -z "$DISPLAY" ]; then
-	echo "$pass"
+	printf "%s\n" "$pass"
 else
-	echo "$pass" | xclip -selection clipboard
+	printf "%s" "$pass" | xclip -selection clipboard
 	{ sleep 16; echo "" | xclip -selection clipboard; } &
 	echo >&2 "copied to clipboard; will clear it after 16s"
 fi
