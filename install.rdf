@@ -12,6 +12,7 @@
     <em:iconURL>chrome://gnome-keyring/skin/seahorse.svg</em:iconURL>
     <em:homepageURL>https://github.com/swick/mozilla-gnome-keyring</em:homepageURL>
     <em:type>2</em:type>
+    <em:multiprocessCompatible>true</em:multiprocessCompatible>
 
     <em:optionsURL>chrome://gnome-keyring/content/options.xul</em:optionsURL>
 
