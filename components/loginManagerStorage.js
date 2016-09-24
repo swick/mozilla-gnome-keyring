@@ -269,9 +269,76 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		}
 		return count;
 	},
-	searchLogins: function(count, matchData, logins) {
-		// TODO: implement
-		this.stub(arguments);
+	searchLogins: function(count, matchData) {
+		/*
+		we should handle all of those, but we can't because we don't have
+		enough data in the keyring; so just handle what we got
+
+		"formSubmitURL"
+		"hostname"
+		"httpRealm"
+		"id"
+		"usernameField"
+		"passwordField"
+		"encryptedUsername"
+		"encryptedPassword"
+		"guid"
+		"encType"
+		"timeCreated"
+		"timeLastUsed"
+		"timePasswordChanged"
+		"timesUsed"
+		*/
+
+		this.tryUnlockKeyring();
+
+		let that = this;
+		let itemMatches = function(i, f) {
+			return (
+			(f[that.attributeFormSubmitURL] == undefined ||
+			i.attributes[that.attributeFormSubmitURL] == f[that.attributeFormSubmitURL])
+			&&
+			(f[that.attributeHostname] == undefined ||
+			i.attributes[that.attributeHostname] == f[that.attributeHostname])
+			&&
+			(f[that.attributeHttpRealm] == undefined ||
+			i.attributes[that.attributeHttpRealm] == f[that.attributeHttpRealm])
+			&&
+			(f[that.attributeUsernameField] == undefined ||
+			i.attributes[that.attributeUsernameField] == f[that.attributeUsernameField])
+			&&
+			(f[that.attributePasswordField] == undefined ||
+			i.attributes[that.attributePasswordField] == f[that.attributePasswordField])
+			);
+		};
+
+		let fields = {};
+		let propEnum = matchData.enumerator;
+		while (propEnum.hasMoreElements()) {
+			let prop = propEnum.getNext().QueryInterface(Ci.nsIProperty);
+			fields[prop.name] = prop.value;
+		}
+
+		let items = this.getItems(this.keyringName);
+		let logins = [];
+		for(var i=0; i<items.length; i++) {
+			let item = items[i];
+			if(itemMatches(item, fields)) {
+				var login = Cc["@mozilla.org/login-manager/loginInfo;1"]
+						.createInstance(Ci.nsILoginInfo);
+				login.init(item.attributes[this.attributeHostname],
+					   item.attributes[this.attributeFormSubmitURL],
+					   /* The HttpRealm must be either a non empty string or null */
+					   item.attributes[this.attributeHttpRealm] == "" ? null : item.attributes[this.attributeHttpRealm],
+					   item.attributes[this.attributeUsername],
+					   item.secret,
+					   item.attributes[this.attributeUsernameField],
+					   item.attributes[this.attributePasswordField]);
+				logins.push(login);
+			}
+		}
+		count.value = logins.length;
+		return logins;
 	},
 	itemMatchesLogin: function(item, aHostname, aFormSubmitURL, aHttpRealm) {
 		return  (item.attributes[this.attributeInfoMagic] == "loginInfoMagicv1") &&
