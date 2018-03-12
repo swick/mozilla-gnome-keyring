@@ -33,6 +33,9 @@ You can backup your passwords easily, separately from the rest of your
 mozilla profile. Your keyrings are stored ``~/.gnome2/keyrings`` - even
 gnome-keyring 3.0-3.16 does this, though this may change in the future.
 
+In KDE, however, the keyrings are instead located in ``~/.local/share/keyrings/`` 
+or possibly elsewhere.
+
 You can also take advantage of the more fine-tuned keyring management
 features of gnome-keyring, such as:
 
