@@ -2,6 +2,13 @@
 mozilla-gnome-keyring
 =====================
 
+do not confuse this project: https://addons.mozilla.org/en-US/firefox/addon/mozilla-gnome-keyring/reviews/
+with another one doing the same thing, but where sources are currently inaccessible: https://addons.mozilla.org/en-US/firefox/addon/gnome-keyring-integration/reviews/
+
+
+
+
+
 A mozilla extension to store passwords and form logins in gnome-keyring
 
 This replaces the default password manager in Firefox and Thunderbird
