@@ -344,7 +344,7 @@ var gnome_keyring_attribute_get_uint32 = gnomeKeyringLib.declare("gnome_keyring_
 	Type.GnomeKeyringAttribute.ptr /* attribute*/);
 
 
-create = function(keyring, password) {
+var create = function(keyring, password) {
 	if(typeof password != "string")
 		password = null;
 	var error = gnome_keyring_create_sync(keyring, password);
@@ -352,13 +352,13 @@ create = function(keyring, password) {
 		throw "gnome_keyring_create_sync failed: " + error;
 };
 
-destroy = function(keyring) {
+var destroy = function(keyring) {
 	var error = gnome_keyring_delete_sync(keyring);
 	if(error != Values.Result.OK)
 		throw "gnome_keyring_delete_sync failed: " + error;
 };
 
-unlock = function(keyring, password) {
+var unlock = function(keyring, password) {
 	if(typeof password != "string")
 		password = null;
 	var error = gnome_keyring_unlock_sync(keyring, password);
@@ -366,13 +366,13 @@ unlock = function(keyring, password) {
 		throw "gnome_keyring_unlock_sync failed: " + error;
 };
 
-lock = function(keyring) {
+var lock = function(keyring) {
 	var error = gnome_keyring_lock_sync(keyring);
 	if(error != Values.Result.OK)
 		throw "gnome_keyring_lock_sync failed: " + error;
 };
 
-getInfo = function(keyring) {
+var getInfo = function(keyring) {
 	var info = Type.GnomeKeyringInfo(0);
 	var error = gnome_keyring_get_info_sync(keyring, info.address());
 	if(error != Values.Result.OK)
@@ -381,18 +381,18 @@ getInfo = function(keyring) {
 	return info;
 };
 
-isLocked = function(keyring) {
+var isLocked = function(keyring) {
 	var info = getInfo(keyring);
 	return gnome_keyring_info_get_is_locked(info);
 };
 
-changePassword = function(keyring, oldPassword, newPassword) {
+var changePassword = function(keyring, oldPassword, newPassword) {
 	var error = gnome_keyring_change_password_sync(keyring, oldPassword, newPassword);
 	if(error != Values.Result.OK)
 		throw "gnome_keyring_change_password_sync failed: " + error;
 };
 
-getNames = function() {
+var getNames = function() {
 	var list = Type.GList.ptr(0);
 	var error = gnome_keyring_list_keyring_names_sync(list.address())
 	if(error != Values.Result.OK)
@@ -408,7 +408,7 @@ getNames = function() {
 	return names;
 };
 
-getItemIDs = function(keyring) {
+var getItemIDs = function(keyring) {
 	var list = Type.GList.ptr(0);
 	var error = gnome_keyring_list_item_ids_sync(keyring, list.address());
 	if(error != Values.Result.OK)
@@ -424,7 +424,7 @@ getItemIDs = function(keyring) {
 	return idsOut;
 };
 
-getItems = function(keyring) {
+var getItems = function(keyring) {
 	var ids = getItemIDs(keyring, ids);
 
 	var itemsOut = [];
@@ -453,7 +453,7 @@ getItems = function(keyring) {
 	return itemsOut;
 };
 
-itemCreate = function(keyring, type, displayName, attributes, secret,
+var itemCreate = function(keyring, type, displayName, attributes, secret,
 			      update_if_exists) {
 	var error = Values.Result.OK;
 	var attr = gnome_keyring_attribute_list_new();
@@ -476,13 +476,13 @@ itemCreate = function(keyring, type, displayName, attributes, secret,
 	return itemIdOut;
 };
 
-itemDelete = function(keyring, id) {
+var itemDelete = function(keyring, id) {
 	var error = gnome_keyring_item_delete_sync(keyring, id);
 	if(error != Values.Result.OK)
 		throw "gnome_keyring_item_delete_sync failed: " + error;
 };
 
-itemGetInfo = function(keyring, id) {
+var itemGetInfo = function(keyring, id) {
 	var info = Type.GnomeKeyringItemInfo(0);
 	var error = gnome_keyring_item_get_info_sync(keyring, id, info.address());
 	if(error != Values.Result.OK)
@@ -495,7 +495,7 @@ itemGetInfo = function(keyring, id) {
 	};
 };
 
-itemGetAttributes = function(keyring, id) {
+var itemGetAttributes = function(keyring, id) {
 	var attributes = Type.GnomeKeyringAttributeList.ptr(0);
 	var error = gnome_keyring_item_get_attributes_sync(keyring, id, attributes.address());
 	if(error != Values.Result.OK)
