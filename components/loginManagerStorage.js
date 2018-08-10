@@ -49,12 +49,7 @@ GnomeKeyringLoginManagerStorage.prototype = {
 		this._logService.logStringMessage("GnomeKeyringLoginManagerStorage: " + message);
 	},
 
-	// Logs function name and arguments for debugging
-	stub: function(arguments) {
-		var args = [];
-		for (let i = 0; i < arguments.length; i++)
-			args.push(arguments[i])
-		this.log("Called " + arguments.callee.name + "(" + args.join(",") + ")");
+	stub: function() {
 	},
 
 	get keyringName() {
